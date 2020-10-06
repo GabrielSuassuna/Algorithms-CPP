@@ -3,7 +3,7 @@
 std::tuple<double, std::vector<double>> matrixEigenvalue::inversePower(std::vector<std::vector<double>> matrix, std::vector<double> initialGuess, double toleranceError)
 {
   double eigenvalueNew = 0;
-  double eigenvalueOld;
+  double eigenvalueOld, eigenvalue;
   std::vector<double> vectorNew = initialGuess;
   std::vector<double> vectorOld;
 
@@ -16,5 +16,7 @@ std::tuple<double, std::vector<double>> matrixEigenvalue::inversePower(std::vect
     eigenvalueNew = linalg::dotProduct(vectorOld, vectorNew);
   } while (abs((eigenvalueNew - eigenvalueOld) / eigenvalueNew) > toleranceError);
 
-  return std::make_tuple(eigenvalueNew, vectorOld);
+  eigenvalue = 1 / eigenvalueNew;
+
+  return std::make_tuple(eigenvalue, vectorOld);
 }

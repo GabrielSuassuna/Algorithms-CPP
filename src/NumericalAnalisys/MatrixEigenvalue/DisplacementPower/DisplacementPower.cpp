@@ -7,7 +7,6 @@ std::tuple<double, std::vector<double>> matrixEigenvalue::displacementPower(std:
 
   std::vector<std::vector<double>> matrixHat = linalg::matrixSubtraction(
       matrix, linalg::scalarMatrixMultiplication(linalg::identityMatrix(matrix.size()), displacement));
-
   std::tie(eigenvalueHat, vectorHat) = matrixEigenvalue::inversePower(matrixHat, initialGuess, toleranceError);
 
   eigenvalue = eigenvalueHat + displacement;
