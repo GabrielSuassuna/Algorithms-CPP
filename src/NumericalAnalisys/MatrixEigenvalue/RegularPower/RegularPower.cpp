@@ -1,6 +1,6 @@
 #include "../matrixEigenvalue.h"
 
-void matrixEigenvalue::powerMethod(std::vector<std::vector<double>> matrix, std::vector<double> initialGuess, double toleranceError)
+std::tuple<double, std::vector<double>> matrixEigenvalue::regularPower(std::vector<std::vector<double>> matrix, std::vector<double> initialGuess, double toleranceError)
 {
   double eigenvalueNew = 0;
   double eigenvalueOld;
@@ -16,8 +16,5 @@ void matrixEigenvalue::powerMethod(std::vector<std::vector<double>> matrix, std:
     eigenvalueNew = linalg::dotProduct(vectorOld, vectorNew);
   } while (abs((eigenvalueNew - eigenvalueOld) / eigenvalueNew) > toleranceError);
 
-  std::cout << "Autovalor Dominante: " << eigenvalueNew << std::endl;
-  std::cout << "Autovetor Correspondente: ";
-  linalg::printVector(vectorOld);
-  std::cout << std::endl;
+  return std::make_tuple(eigenvalueNew, vectorOld);
 }
