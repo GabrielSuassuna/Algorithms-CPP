@@ -60,5 +60,16 @@ int main(int argc, char const *argv[])
   linalg::printVector(linalg::gaxpy(matrixH, result));
   std::cout << std::endl;
 
+  std::vector<std::vector<double>> matrixP;
+
+  std::tie(matrixP, result) = matrixEigenvalue::jacobiMethod(A, 0.000001);
+  std::cout << "----------------------------------------" << std::endl
+            << std::endl;
+  std::cout << "Vetor: " << std::endl;
+  linalg::printVector(result);
+  std::cout << "Matriz acumulada: " << std::endl;
+  linalg::printMatrix(matrixP);
+  std::cout << "----------------------------------------" << std::endl
+            << std::endl;
   return 0;
 }
