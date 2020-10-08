@@ -9,6 +9,7 @@ namespace linalg
   void printVector(std::vector<double> vector);
   void printMatrix(std::vector<std::vector<double>> matrix);
   double dotProduct(std::vector<double> x, std::vector<double> y);
+  double sumSquaresTermsBelowDiagonal(std::vector<std::vector<double>> matrixA);
   std::vector<double> normalize(std::vector<double> vector);
   std::vector<double> saxpy(std::vector<double> vector, double alpha);
   std::vector<double> vectorSubtraction(std::vector<double> x, std::vector<double> y);

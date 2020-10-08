@@ -13,7 +13,6 @@ std::vector<std::vector<double>> jacobiMatrixBasedOldMatrix(std::vector<std::vec
   {
     // PI = atan(1.0) * 4
     theta = atan(1.0);
-    std::cout << theta << std::endl;
   }
   else
   {
@@ -50,20 +49,6 @@ std::tuple<std::vector<std::vector<double>>, std::vector<std::vector<double>>> j
   return std::make_tuple(matrixANew, matrixJ);
 }
 
-double sumSquaresTermsBelowDiagonal(std::vector<std::vector<double>> matrixA)
-{
-  double sum = 0;
-  for (size_t i = 1; i < matrixA.size(); i++)
-  {
-    for (size_t j = 0; j < i; j++)
-    {
-      sum += pow(matrixA[i][j], 2);
-    }
-  }
-
-  return sum;
-}
-
 std::tuple<std::vector<std::vector<double>>, std::vector<double>> matrixEigenvalue::jacobiMethod(std::vector<std::vector<double>> matrixA, double toleranceError)
 {
   std::vector<std::vector<double>> matrixP = linalg::identityMatrix(matrixA.size());
@@ -76,7 +61,7 @@ std::tuple<std::vector<std::vector<double>>, std::vector<double>> matrixEigenval
     std::tie(matrixANew, matrixJ) = jacobiScan(matrixAOld);
     matrixAOld = matrixANew;
     matrixP = linalg::matrixMultiplication(matrixP, matrixJ);
-    val = sumSquaresTermsBelowDiagonal(matrixANew);
+    val = linalg::sumSquaresTermsBelowDiagonal(matrixANew);
   } while (val > toleranceError);
 
   for (size_t i = 0; i < matrixANew.size(); i++)
@@ -101,7 +86,7 @@ std::tuple<std::vector<std::vector<double>>, std::vector<double>> matrixEigenval
     std::tie(matrixANew, matrixJ) = jacobiScan(matrixAOld);
     matrixAOld = matrixANew;
     matrixP = linalg::matrixMultiplication(matrixP, matrixJ);
-    val = sumSquaresTermsBelowDiagonal(matrixANew);
+    val = linalg::sumSquaresTermsBelowDiagonal(matrixANew);
   } while (val > toleranceError);
 
   matrixP = linalg::matrixMultiplication(matrixH, matrixP);
