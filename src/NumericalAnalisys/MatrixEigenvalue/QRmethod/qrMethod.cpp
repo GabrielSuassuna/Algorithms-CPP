@@ -81,3 +81,29 @@ std::tuple<std::vector<std::vector<double>>, std::vector<double>> matrixEigenval
 
   return std::make_tuple(matrixP, lamb);
 }
+
+std::tuple<std::vector<std::vector<double>>, std::vector<double>> matrixEigenvalue::qrHouseholder(std::vector<std::vector<double>> matrixA, double toleranceError)
+{
+  std::vector<std::vector<double>> matrixP = linalg::identityMatrix(matrixA.size());
+  std::vector<std::vector<double>> matrixANew, matrixQ, matrixR, matrixAOld, matrixH;
+  std::tie(matrixAOld, matrixH) = matrixEigenvalue::householder(matrixA);
+  std::vector<double> lamb(matrixA.size(), 0.0);
+  double val;
+  do
+  {
+    std::tie(matrixQ, matrixR) = decompositionQR(matrixAOld);
+    matrixANew = linalg::matrixMultiplication(matrixR, matrixQ);
+    matrixAOld = matrixANew;
+    matrixP = linalg::matrixMultiplication(matrixP, matrixQ);
+    val = linalg::sumSquaresTermsBelowDiagonal(matrixANew);
+  } while (val > toleranceError);
+
+  matrixP = linalg::matrixMultiplication(matrixH, matrixP);
+
+  for (size_t i = 0; i < matrixANew.size(); i++)
+  {
+    lamb[i] = matrixANew[i][i];
+  }
+
+  return std::make_tuple(matrixP, lamb);
+}
