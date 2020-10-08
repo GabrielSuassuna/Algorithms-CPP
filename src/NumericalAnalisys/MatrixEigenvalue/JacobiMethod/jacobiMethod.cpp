@@ -71,15 +71,40 @@ std::tuple<std::vector<std::vector<double>>, std::vector<double>> matrixEigenval
   std::vector<std::vector<double>> matrixANew, matrixJ;
   std::vector<double> lamb(matrixA.size(), 0.0);
   double val;
-  int c = 0;
   do
   {
-    c++;
     std::tie(matrixANew, matrixJ) = jacobiScan(matrixAOld);
     matrixAOld = matrixANew;
     matrixP = linalg::matrixMultiplication(matrixP, matrixJ);
     val = sumSquaresTermsBelowDiagonal(matrixANew);
   } while (val > toleranceError);
+
+  for (size_t i = 0; i < matrixANew.size(); i++)
+  {
+    lamb[i] = matrixANew[i][i];
+  }
+
+  return std::make_tuple(matrixP, lamb);
+}
+
+std::tuple<std::vector<std::vector<double>>, std::vector<double>> matrixEigenvalue::jacobiHouseholder(std::vector<std::vector<double>> matrixA, double toleranceError)
+{
+  std::vector<std::vector<double>> matrixP = linalg::identityMatrix(matrixA.size());
+  std::vector<std::vector<double>> matrixAOld, matrixH;
+  std::tie(matrixAOld, matrixH) = matrixEigenvalue::householder(matrixA);
+  std::vector<std::vector<double>> matrixANew, matrixJ;
+  std::vector<double> lamb(matrixA.size(), 0.0);
+  double val;
+
+  do
+  {
+    std::tie(matrixANew, matrixJ) = jacobiScan(matrixAOld);
+    matrixAOld = matrixANew;
+    matrixP = linalg::matrixMultiplication(matrixP, matrixJ);
+    val = sumSquaresTermsBelowDiagonal(matrixANew);
+  } while (val > toleranceError);
+
+  matrixP = linalg::matrixMultiplication(matrixH, matrixP);
 
   for (size_t i = 0; i < matrixANew.size(); i++)
   {
