@@ -46,6 +46,11 @@ std::tuple<std::vector<std::vector<double>>, std::vector<std::vector<double>>> j
     }
   }
 
+  std::cout << "Matriz A:" << std::endl;
+  linalg::printMatrix(matrixANew);
+  std::cout << "Matriz J:" << std::endl;
+  linalg::printMatrix(matrixJ);
+
   return std::make_tuple(matrixANew, matrixJ);
 }
 
@@ -56,13 +61,25 @@ std::tuple<std::vector<std::vector<double>>, std::vector<double>> matrixEigenval
   std::vector<std::vector<double>> matrixANew, matrixJ;
   std::vector<double> lamb(matrixA.size(), 0.0);
   double val;
+
+  std::cout << "iii. Matriz que sai de cada varredura de Jacobi:" << std::endl;
+  int count = 1;
+
   do
   {
+    std::cout << std::endl
+              << "Passo " << count << ":" << std::endl
+              << std::endl;
     std::tie(matrixANew, matrixJ) = jacobiScan(matrixAOld);
     matrixAOld = matrixANew;
     matrixP = linalg::matrixMultiplication(matrixP, matrixJ);
     val = linalg::sumSquaresTermsBelowDiagonal(matrixANew);
+    count += 1;
   } while (val > toleranceError);
+
+  std::cout << std::endl
+            << "i. Matriz diagonal:" << std::endl;
+  linalg::printMatrix(matrixANew);
 
   for (size_t i = 0; i < matrixANew.size(); i++)
   {
@@ -70,6 +87,40 @@ std::tuple<std::vector<std::vector<double>>, std::vector<double>> matrixEigenval
   }
 
   return std::make_tuple(matrixP, lamb);
+}
+
+std::tuple<std::vector<std::vector<double>>, std::vector<std::vector<double>>> jacobiScanHouseholder(std::vector<std::vector<double>> matrixA)
+{
+  std::vector<std::vector<double>> matrixJ = linalg::identityMatrix(matrixA.size());
+  std::vector<std::vector<double>> matrixAOld = matrixA;
+  std::vector<std::vector<double>> matrixANew, matrixJij;
+
+  for (size_t j = 0; j < matrixA[0].size() - 1; j++)
+  {
+    for (size_t i = j + 1; i < matrixA.size(); i++)
+    {
+      matrixJij = jacobiMatrixBasedOldMatrix(matrixAOld, i, j);
+      matrixANew = linalg::matrixMultiplication(
+          linalg::matrixMultiplication(
+              linalg::transpose(matrixJij), matrixAOld),
+          matrixJij);
+      std::cout << std::endl
+                << "Matriz A logo após a linha Anova <- JitT*Avelha*Jit:" << std::endl
+                << std::endl;
+      linalg::printMatrix(matrixANew);
+      matrixAOld = matrixANew;
+      matrixJ = linalg::matrixMultiplication(matrixJ, matrixJij);
+    }
+  }
+
+  std::cout << std::endl
+            << "Matriz A ao final da varredura:" << std::endl;
+  linalg::printMatrix(matrixANew);
+  std::cout << std::endl
+            << "Matriz J ao final da varredura:" << std::endl;
+  linalg::printMatrix(matrixJ);
+
+  return std::make_tuple(matrixANew, matrixJ);
 }
 
 std::tuple<std::vector<std::vector<double>>, std::vector<double>> matrixEigenvalue::jacobiHouseholder(std::vector<std::vector<double>> matrixA, double toleranceError)
@@ -81,15 +132,26 @@ std::tuple<std::vector<std::vector<double>>, std::vector<double>> matrixEigenval
   std::vector<double> lamb(matrixA.size(), 0.0);
   double val;
 
+  std::cout << std::endl
+            << "ii. Imprima matriz Anova logo após a linha Anova <- JitT*Avelha*Jit:" << std::endl;
+
   do
   {
-    std::tie(matrixANew, matrixJ) = jacobiScan(matrixAOld);
+    std::tie(matrixANew, matrixJ) = jacobiScanHouseholder(matrixAOld);
     matrixAOld = matrixANew;
     matrixP = linalg::matrixMultiplication(matrixP, matrixJ);
     val = linalg::sumSquaresTermsBelowDiagonal(matrixANew);
   } while (val > toleranceError);
 
+  std::cout << std::endl
+            << "iii. As colunas P não são autovetores de A:" << std::endl;
+  linalg::printMatrix(matrixP);
+
   matrixP = linalg::matrixMultiplication(matrixH, matrixP);
+
+  std::cout << std::endl
+            << "iv. P = HP; As colunas P são autovetores de A:" << std::endl;
+  linalg::printMatrix(matrixP);
 
   for (size_t i = 0; i < matrixANew.size(); i++)
   {

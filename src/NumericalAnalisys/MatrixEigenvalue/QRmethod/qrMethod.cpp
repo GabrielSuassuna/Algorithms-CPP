@@ -55,6 +55,11 @@ std::tuple<std::vector<std::vector<double>>, std::vector<std::vector<double>>> d
   matrixQ = linalg::transpose(matrixQT);
   matrixR = matrixRNew;
 
+  std::cout << "Matriz Q:" << std::endl;
+  linalg::printMatrix(matrixQ);
+  std::cout << "Matriz R:" << std::endl;
+  linalg::printMatrix(matrixR);
+
   return std::make_tuple(matrixQ, matrixR);
 }
 
@@ -65,14 +70,28 @@ std::tuple<std::vector<std::vector<double>>, std::vector<double>> matrixEigenval
   std::vector<std::vector<double>> matrixANew, matrixQ, matrixR;
   std::vector<double> lamb(matrixA.size(), 0.0);
   double val;
+
+  std::cout << "iii. Matriz que sai de cada varredura de Jacobi:" << std::endl;
+  int count = 1;
+
   do
   {
+    std::cout << std::endl
+              << "Passo " << count << ":" << std::endl
+              << std::endl;
     std::tie(matrixQ, matrixR) = decompositionQR(matrixAOld);
     matrixANew = linalg::matrixMultiplication(matrixR, matrixQ);
     matrixAOld = matrixANew;
+    std::cout << "Matriz A:" << std::endl;
+    linalg::printMatrix(matrixANew);
     matrixP = linalg::matrixMultiplication(matrixP, matrixQ);
     val = linalg::sumSquaresTermsBelowDiagonal(matrixANew);
+    count++;
   } while (val > toleranceError);
+
+  std::cout << std::endl
+            << "i. Matriz diagonal:" << std::endl;
+  linalg::printMatrix(matrixANew);
 
   for (size_t i = 0; i < matrixANew.size(); i++)
   {
@@ -89,16 +108,36 @@ std::tuple<std::vector<std::vector<double>>, std::vector<double>> matrixEigenval
   std::tie(matrixAOld, matrixH) = matrixEigenvalue::householder(matrixA);
   std::vector<double> lamb(matrixA.size(), 0.0);
   double val;
+
+  std::cout << std::endl
+            << "i. Imprima matriz Anova que sai de cada iteração QR" << std::endl;
+  int count = 1;
+
   do
   {
+    std::cout << std::endl
+              << "Passo " << count << ":" << std::endl
+              << std::endl;
     std::tie(matrixQ, matrixR) = decompositionQR(matrixAOld);
     matrixANew = linalg::matrixMultiplication(matrixR, matrixQ);
     matrixAOld = matrixANew;
+    std::cout
+        << "Matriz Anova:" << std::endl;
+    linalg::printMatrix(matrixANew);
     matrixP = linalg::matrixMultiplication(matrixP, matrixQ);
     val = linalg::sumSquaresTermsBelowDiagonal(matrixANew);
+    count++;
   } while (val > toleranceError);
 
+  std::cout << std::endl
+            << "ii. As colunas P não são autovetores de A:" << std::endl;
+  linalg::printMatrix(matrixP);
+
   matrixP = linalg::matrixMultiplication(matrixH, matrixP);
+
+  std::cout << std::endl
+            << "iii. P = HP; As colunas P são autovetores de A:" << std::endl;
+  linalg::printMatrix(matrixP);
 
   for (size_t i = 0; i < matrixANew.size(); i++)
   {

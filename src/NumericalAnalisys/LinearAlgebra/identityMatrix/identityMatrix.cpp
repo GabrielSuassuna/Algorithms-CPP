@@ -4,10 +4,10 @@ std::vector<std::vector<double>> linalg::identityMatrix(int n)
 {
   std::vector<std::vector<double>> result;
 
-  for (size_t i = 0; i < n; i++)
+  for (int i = 0; i < n; i++)
   {
     result.push_back({});
-    for (size_t j = 0; j < n; j++)
+    for (int j = 0; j < n; j++)
     {
       if (i == j)
       {
