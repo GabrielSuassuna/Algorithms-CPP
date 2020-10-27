@@ -42,7 +42,7 @@ std::tuple<std::vector<std::vector<double>>, std::vector<std::vector<double>>> j
   std::vector<std::vector<double>> matrixAOld = matrixA;
   std::vector<std::vector<double>> matrixANew, matrixJij;
 
-  // Para transformar a matriz original para esse formato, precisamos zerar todos
+  // Para transformar a matriz original, precisamos zerar todos
   // os elementos abaixo do elemento da diagonal principal em cada coluna exceto na
   // última. Portanto, o loop j das colunas vai até a penúltima coluna. O loop
   // das linhas para uma dada coluna j, percorre todos os elementos abaixo da linha
